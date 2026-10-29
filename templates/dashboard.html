@@ -1,0 +1,44 @@
+{% extends "base.html" %}
+{% block content %}
+<h1>Dashboard</h1>
+<div class="grid">
+  <div class="stat"><div class="n">{{ stats.total }}</div><div class="l">Total batches</div></div>
+  <div class="stat"><div class="n" style="color:var(--ok)">{{ stats.active }}</div><div class="l">Active</div></div>
+  <div class="stat"><div class="n" style="color:var(--warn)">{{ stats.near }}</div><div class="l">Expiring in 30 days</div></div>
+  <div class="stat"><div class="n" style="color:var(--warn)">{{ stats.expired }}</div><div class="l">Expired</div></div>
+  <div class="stat"><div class="n" style="color:var(--bad)">{{ stats.recalled }}</div><div class="l">Recalled</div></div>
+</div>
+
+<div class="card">
+  <div class="row" style="justify-content:space-between">
+    <h2>Near-expiry &amp; expired batches</h2>
+    <div class="row">
+      <form method="get" class="inline">
+        <span class="muted">Within</span>
+        <input type="number" name="days" value="{{ days }}" min="1">
+        <span class="muted">days</span><button>Filter</button>
+      </form>
+      <form method="post" action="{{ url_for('run_expiry') }}" class="inline">
+        <input type="hidden" name="days" value="{{ days }}">
+        <button class="danger" title="Runs the PL/SQL cursor procedure and marks expired batches">Run expiry job</button>
+      </form>
+    </div>
+  </div>
+  <div class="scroll">
+  <table>
+    <tr><th>Batch</th><th>Medicine</th><th>Expiry</th><th>Qty</th><th>Days left</th></tr>
+    {% for b in near %}
+    <tr>
+      <td>{{ b.batch_no }}</td><td>{{ b.name }}</td>
+      <td>{{ b.expiry_date.strftime('%Y-%m-%d') }}</td><td>{{ b.quantity }}</td>
+      <td class="{{ 'late' if b.days_left < 0 else 'soon' }}">
+        {{ 'Expired ' ~ (-b.days_left|int) ~ ' d ago' if b.days_left < 0 else b.days_left|int ~ ' d' }}
+      </td>
+    </tr>
+    {% else %}
+    <tr><td colspan="5" class="muted">No batches in this window.</td></tr>
+    {% endfor %}
+  </table>
+  </div>
+</div>
+{% endblock %}

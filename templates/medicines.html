@@ -1,0 +1,22 @@
+{% extends "base.html" %}
+{% block title %}Medicines{% endblock %}
+{% block content %}
+<h1>Medicines</h1>
+<div class="card">
+  <h2>Add medicine</h2>
+  <form method="post" class="row">
+    <label>Name<input name="name" required></label>
+    <label>Manufacturer<input name="manufacturer"></label>
+    <label>Category<input name="category"></label>
+    <button>Add</button>
+  </form>
+</div>
+<div class="card scroll">
+  <table>
+    <tr><th>ID</th><th>Name</th><th>Manufacturer</th><th>Category</th></tr>
+    {% for m in meds %}
+    <tr><td>{{ m.medicine_id }}</td><td>{{ m.name }}</td><td>{{ m.manufacturer }}</td><td>{{ m.category }}</td></tr>
+    {% else %}<tr><td colspan="4" class="muted">No medicines yet.</td></tr>{% endfor %}
+  </table>
+</div>
+{% endblock %}

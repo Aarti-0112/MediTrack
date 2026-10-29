@@ -1,0 +1,71 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>{% block title %}MedTrack{% endblock %}</title>
+<style>
+  :root { --bg:#f4f6f8; --card:#fff; --text:#1c2733; --muted:#6b7785; --line:#e2e7ec;
+          --brand:#0f766e; --ok:#15803d; --warn:#b45309; --bad:#b91c1c; }
+  @media (prefers-color-scheme: dark) {
+    :root { --bg:#10161c; --card:#18212a; --text:#e6ebf0; --muted:#93a1af; --line:#26323d;
+            --brand:#2dd4bf; --ok:#4ade80; --warn:#fbbf24; --bad:#f87171; } }
+  * { box-sizing:border-box; }
+  body { margin:0; font-family:system-ui,-apple-system,Segoe UI,Roboto,sans-serif;
+         background:var(--bg); color:var(--text); }
+  nav { background:var(--card); border-bottom:1px solid var(--line); padding:0 24px;
+        display:flex; align-items:center; gap:24px; flex-wrap:wrap; }
+  nav .logo { font-weight:700; color:var(--brand); padding:16px 0; font-size:18px; }
+  nav a { color:var(--muted); text-decoration:none; padding:16px 0; font-size:14px;
+          border-bottom:2px solid transparent; }
+  nav a:hover, nav a.active { color:var(--text); border-bottom-color:var(--brand); }
+  main { max-width:1100px; margin:24px auto; padding:0 20px; }
+  h1 { font-size:22px; margin:0 0 16px; }
+  h2 { font-size:16px; margin:0 0 12px; }
+  .card { background:var(--card); border:1px solid var(--line); border-radius:12px;
+          padding:18px; margin-bottom:20px; }
+  .grid { display:grid; grid-template-columns:repeat(auto-fit,minmax(170px,1fr)); gap:14px;
+          margin-bottom:20px; }
+  .stat { background:var(--card); border:1px solid var(--line); border-radius:12px; padding:16px; }
+  .stat .n { font-size:28px; font-weight:700; }
+  .stat .l { color:var(--muted); font-size:13px; }
+  table { width:100%; border-collapse:collapse; font-size:14px; }
+  th, td { text-align:left; padding:9px 10px; border-bottom:1px solid var(--line); }
+  th { color:var(--muted); font-weight:600; font-size:12px; text-transform:uppercase; }
+  .scroll { overflow-x:auto; }
+  input, select, button { font:inherit; padding:8px 10px; border-radius:8px;
+          border:1px solid var(--line); background:var(--bg); color:var(--text); }
+  button { background:var(--brand); color:#fff; border:none; cursor:pointer; }
+  button.danger { background:var(--bad); }
+  button:hover { opacity:.9; }
+  form.inline { display:inline-flex; gap:6px; align-items:center; margin:2px 0; }
+  form.inline input[type=number] { width:70px; }
+  form.inline input[type=text] { width:120px; }
+  .row { display:flex; gap:10px; flex-wrap:wrap; align-items:end; }
+  .row label { display:flex; flex-direction:column; font-size:12px; color:var(--muted); gap:4px; }
+  .badge { padding:2px 9px; border-radius:99px; font-size:12px; font-weight:600;
+           border:1px solid currentColor; }
+  .ACTIVE { color:var(--ok); } .RECALLED { color:var(--bad); } .EXPIRED { color:var(--warn); }
+  .flash { padding:11px 14px; border-radius:8px; margin-bottom:14px; font-size:14px;
+           border:1px solid currentColor; }
+  .flash.ok { color:var(--ok); } .flash.err { color:var(--bad); }
+  .muted { color:var(--muted); }
+  .late { color:var(--bad); font-weight:600; } .soon { color:var(--warn); font-weight:600; }
+</style>
+</head>
+<body>
+<nav>
+  <span class="logo">&#9877; MedTrack</span>
+  <a href="{{ url_for('dashboard') }}" class="{{ 'active' if request.endpoint=='dashboard' }}">Dashboard</a>
+  <a href="{{ url_for('medicines') }}" class="{{ 'active' if request.endpoint=='medicines' }}">Medicines</a>
+  <a href="{{ url_for('batches') }}" class="{{ 'active' if request.endpoint=='batches' }}">Batches</a>
+  <a href="{{ url_for('logs') }}" class="{{ 'active' if request.endpoint=='logs' }}">Logs &amp; Recalls</a>
+</nav>
+<main>
+  {% with msgs = get_flashed_messages(with_categories=true) %}
+    {% for cat, m in msgs %}<div class="flash {{ cat }}">{{ m }}</div>{% endfor %}
+  {% endwith %}
+  {% block content %}{% endblock %}
+</main>
+</body>
+</html>

@@ -1,0 +1,37 @@
+{% extends "base.html" %}
+{% block title %}Logs{% endblock %}
+{% block content %}
+<h1>Logs &amp; Recalls</h1>
+
+<div class="card scroll">
+  <h2>Recalls</h2>
+  <table>
+    <tr><th>ID</th><th>Batch</th><th>Qty recalled</th><th>Reason</th><th>Date</th></tr>
+    {% for r in recalls %}
+    <tr><td>{{ r.recall_id }}</td><td>{{ r.batch_no }}</td><td>{{ r.qty_recalled }}</td><td>{{ r.reason }}</td><td>{{ r.recall_date }}</td></tr>
+    {% else %}<tr><td colspan="5" class="muted">No recalls.</td></tr>{% endfor %}
+  </table>
+</div>
+
+<div class="card scroll">
+  <h2>Stock movements</h2>
+  <table>
+    <tr><th>ID</th><th>Batch</th><th>Type</th><th>Change</th><th>Remarks</th><th>When</th></tr>
+    {% for m in moves %}
+    <tr><td>{{ m.movement_id }}</td><td>{{ m.batch_no }}</td><td>{{ m.movement_type }}</td>
+        <td>{{ '%+d' % m.qty_change }}</td><td>{{ m.remarks or '' }}</td><td>{{ m.moved_on }}</td></tr>
+    {% else %}<tr><td colspan="6" class="muted">No movements.</td></tr>{% endfor %}
+  </table>
+</div>
+
+<div class="card scroll">
+  <h2>Trigger audit log (latest 30)</h2>
+  <table>
+    <tr><th>ID</th><th>Batch ID</th><th>Old qty</th><th>New qty</th><th>Action</th><th>By</th><th>When</th></tr>
+    {% for a in audit %}
+    <tr><td>{{ a.audit_id }}</td><td>{{ a.batch_id }}</td><td>{{ a.old_qty }}</td><td>{{ a.new_qty }}</td>
+        <td>{{ a.action }}</td><td>{{ a.changed_by }}</td><td>{{ a.changed_on }}</td></tr>
+    {% else %}<tr><td colspan="7" class="muted">Nothing logged yet.</td></tr>{% endfor %}
+  </table>
+</div>
+{% endblock %}
